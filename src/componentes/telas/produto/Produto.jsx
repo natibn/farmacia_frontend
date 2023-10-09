@@ -10,12 +10,12 @@ function Produto (){
     const [alerta, setAlerta] = useState ({status : "", message : ""});
     const [listaObjetos, setListaObjetos] = useState([]);
     const [editar, setEditar] = useState(false);
-    const [objeto, setObjeto] = useState({codigo:0, nome:""});
+    const [objeto, setObjeto] = useState({codigo: 0, nome: "", descricao:"", quantidade_estoque:0, ativo:false, valor:0, data_cadastro:null});
 
     const novoObjeto = () => {
         setEditar(false);
         setAlerta({status: "", message: ""});
-        setObjeto({codigo: 0, nome: ""});
+        setObjeto({codigo: 0, nome: "", descricao:"", quantidade_estoque:0, ativo:false, valor:0, data_cadastro:null});
     }
 
     const editarObjeto = async codigo => {
@@ -28,12 +28,13 @@ function Produto (){
         e.preventDefault();
         const metodo = editar ? 'PUT' : 'POST';
         try{
-            let retornoAPI = await cadastraProdutoAPI(objeto, metodo);
+            console.log(objeto)
+           /* let retornoAPI = await cadastraProdutoAPI(objeto, metodo);
             setAlerta({status: retornoAPI.status, message: retornoAPI.message});
             setObjeto(retornoAPI.objeto);
             if(!editar){
                 setEditar(true);
-            }
+            }*/
         }catch (err){
             console.log(err)
         }

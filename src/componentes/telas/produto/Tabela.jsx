@@ -8,7 +8,7 @@ function Tabela(){
 
     return (
         <div style={{padding : '20px'}}>
-            <h1>Produtos</h1>
+            <h1 style={{backgroundColor:"white", textAlign:"center"}}>Produtos</h1>
             <Alerta alerta={alerta}/>
             <button type="button" className="btn btn-primary"
             data-bs-toggle="modal" data-bs-target="#modalEdicao"
