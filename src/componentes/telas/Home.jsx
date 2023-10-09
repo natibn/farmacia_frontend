@@ -1,6 +1,6 @@
 const Home = () => (
     <div>
-        <h1>eShop</h1>
+        <h1>Farmácia</h1>
     </div>
 );
 export default Home;

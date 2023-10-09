@@ -1,6 +1,6 @@
 {
-  "short_name": "eShop - PW",
-  "name": "eShop PW IFSUL",
+  "short_name": "Farmácia",
+  "name": "Trabalho de PW - Farmácia - Natália",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,12 +8,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "farmacia-logo.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "farmacia-logo.png",
       "type": "image/png",
       "sizes": "512x512"
     }
