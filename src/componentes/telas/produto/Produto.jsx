@@ -29,12 +29,12 @@ function Produto (){
         const metodo = editar ? 'PUT' : 'POST';
         try{
             console.log(objeto)
-           /* let retornoAPI = await cadastraProdutoAPI(objeto, metodo);
+           let retornoAPI = await cadastraProdutoAPI(objeto, metodo);
             setAlerta({status: retornoAPI.status, message: retornoAPI.message});
             setObjeto(retornoAPI.objeto);
             if(!editar){
                 setEditar(true);
-            }*/
+            }
         }catch (err){
             console.log(err)
         }
