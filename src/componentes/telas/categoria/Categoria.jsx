@@ -1,76 +1,105 @@
 import { useState, useEffect } from "react";
 import CategoriaContext from "./CategoriaContext";
-import { getCategoriasAPI, getCategoriasPorCodigoAPI, 
-    deleteCategoriasPorCodigoAPI, cadastraCategoriaAPI} from "../../../servicos/CategoriaServico";
+import {
+    getCategoriasAPI, getCategoriaPorCodigoAPI,
+    deleteCategoriaPorCodigoAPI, cadastraCategoriaAPI
+} from "../../../servicos/CategoriaServico";
 import Tabela from "./Tabela";
 import Form from "./Form";
+import Carregando from "../../comuns/Carregando";
+import WithAuth from "../../../seguranca/WithAuth";
+import { useNavigate } from "react-router-dom";
 
-function Categoria (){
+function Categoria() {
 
-    const [alerta, setAlerta] = useState ({status : "", message : ""});
+    let navigate = useNavigate();
+
+    const [alerta, setAlerta] = useState({ status: "", message: "" });
     const [listaObjetos, setListaObjetos] = useState([]);
     const [editar, setEditar] = useState(false);
-    const [objeto, setObjeto] = useState({codigo:0, nome:""});
+    const [objeto, setObjeto] = useState({ codigo: 0, nome: "" });
+    const [carregando, setCarregando] = useState(false);
 
     const novoObjeto = () => {
         setEditar(false);
-        setAlerta({status: "", message: ""});
-        setObjeto({codigo: 0, nome: ""});
+        setAlerta({ status: "", message: "" });
+        setObjeto({ codigo: 0, nome: "" });
     }
 
     const editarObjeto = async codigo => {
-        setEditar(true);
-        setAlerta({status: "", message: ""});
-        setObjeto(await getCategoriasPorCodigoAPI(codigo));
+        try {
+            setEditar(true);
+            setAlerta({ status: "", message: "" });
+            setObjeto(await getCategoriaPorCodigoAPI(codigo));
+        } catch (err) {
+            window.location.reload();
+            navigate("/login", { replace: true });
+        }
     }
 
     const acaoCadastrar = async e => {
         e.preventDefault();
         const metodo = editar ? 'PUT' : 'POST';
-        try{
+        try {
             let retornoAPI = await cadastraCategoriaAPI(objeto, metodo);
-            setAlerta({status: retornoAPI.status, message: retornoAPI.message});
+            setAlerta({ status: retornoAPI.status, message: retornoAPI.message });
             setObjeto(retornoAPI.objeto);
-            if(!editar){
+            if (!editar) {
                 setEditar(true);
             }
-        }catch (err){
-            console.log(err)
+        } catch (err) {
+            window.location.reload();
+            navigate("/login", { replace: true });
         }
-
         recuperaCategorias();
     }
 
     const handleChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        setObjeto({...objeto, [name]: value});
+        setObjeto({ ...objeto, [name]: value });
     }
 
     const recuperaCategorias = async () => {
-        setListaObjetos(await getCategoriasAPI());
+        try {
+            setCarregando(true);
+            setListaObjetos(await getCategoriasAPI());
+            setCarregando(false);
+        } catch (err) {
+            window.location.reload();
+            navigate("/login", { replace: true });
+        }
     }
 
     const remover = async codigo => {
-        if (window.confirm('Deseja remover este objeto?')){
-            let retornoAPI = await deleteCategoriasPorCodigoAPI(codigo);
-            setAlerta({status : retornoAPI.status, message : retornoAPI.message});
-            recuperaCategorias();
+        try {
+            if (window.confirm('Deseja remover este objeto?')) {
+                let retornoAPI = await deleteCategoriaPorCodigoAPI(codigo);
+                setAlerta({ status: retornoAPI.status, message: retornoAPI.message });
+                recuperaCategorias();
+            }
+        } catch (err) {
+            window.location.reload();
+            navigate("/login", { replace: true });
         }
     }
 
     useEffect(() => {
-        console.log("mensagem");
         recuperaCategorias();
     }, []);
 
     return (
-        <CategoriaContext.Provider value={{alerta, listaObjetos, remover, objeto, editar,
-        acaoCadastrar, handleChange, novoObjeto, editarObjeto}}>
-            <Tabela/>
-            <Form/>
+        <CategoriaContext.Provider
+            value={{
+                alerta, listaObjetos, remover, objeto, editar,
+                acaoCadastrar, handleChange, novoObjeto, editarObjeto
+            }}>
+            <Carregando carregando={carregando}>
+                <Tabela />
+            </Carregando>
+            <Form />
         </CategoriaContext.Provider>
     )
 }
 
-export default Categoria;
+export default WithAuth(Categoria);
